@@ -6,6 +6,17 @@ import org.gradoop.flink.model.impl.epgm.GraphCollection;
 import org.gradoop.flink.model.impl.epgm.LogicalGraph;
 import org.gradoop.flink.util.FlinkAsciiGraphLoader;
 import org.gradoop.flink.util.GradoopFlinkConfig;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.results.format.ResultFormatType;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
+
+import java.util.concurrent.TimeUnit;
 
 
 public class Main {
@@ -26,12 +37,14 @@ public class Main {
      *   <li>calculate and show the WCC result</li>
      * </ol>
      *
-     * @param args no args used
      * @see <a href="https://github.com/dbs-leipzig/gradoop/wiki/Getting-started">
      * Gradoop Quickstart Example</a>
      * @throws Exception on failure
      */
-    public static void main(String[] args) throws Exception {
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    public void runQuickstart() throws Exception {
         // create flink execution environment
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
@@ -74,6 +87,29 @@ public class Main {
         workspaces.print();
     }
 
+    /*
+     * ============================== HOW TO RUN THIS BENCHMARK: =================
+     *
+     * You are expected to see the different run modes for the same benchmark.
+     * Note the units are different, scores are consistent with each other.
+     *
+     * You can run this test:
+     *
+     * a) Via the command line:
+     *    $ mvn clean install
+     *    $ java -jar target/gradoop-pipeline-1.0-SNAPSHOT.jar Master -f 1
+     *    (we requested a single fork; there are also other options, see -h)
+     */
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(Main.class.getSimpleName())
+                .forks(1)
+                .resultFormat(ResultFormatType.JSON)
+                .build();
+
+        new Runner(opt).run();
+    }
+
     /**
      * Example Graph for QuickstartExample
      *
@@ -81,7 +117,7 @@ public class Main {
      * Gradoop Quickstart Example</a>
      * @return example graph
      */
-    public static String getGraphGDLString() {
+    private static String getGraphGDLString() {
 
         return
                 "g1:graph[" +

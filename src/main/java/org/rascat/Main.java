@@ -97,7 +97,7 @@ public class Main {
      *
      * a) Via the command line:
      *    $ mvn clean install
-     *    $ java -jar target/gradoop-pipeline-1.0-SNAPSHOT.jar Master -f 1
+     *    $ java -jar target/gradoop-pipeline-1.0-SNAPSHOT.jar org.rascat.Master -f 1
      *    (we requested a single fork; there are also other options, see -h)
      */
     public static void main(String[] args) throws RunnerException {
